@@ -9,6 +9,7 @@ const { Todo } = require('./models/todo');
 const { User } = require('./models/user');
 
 const app = express();
+const port = process.env.PORT || 3000;
 
 /*
 Use built-in middleware (previously required importing body-parser) to parse
@@ -67,8 +68,8 @@ app.get('/todos/:id', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
 
 module.exports = { app };
