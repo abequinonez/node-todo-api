@@ -1,14 +1,15 @@
 const expect = require('expect');
 const request = require('supertest');
+const { ObjectID } = require('mongodb');
 
 const { app } = require('./../server');
 const { Todo } = require('./../models/todo');
 
 // Seed data
 const todosArr = [
-  { text: 'First test todo' },
-  { text: 'Second test todo' },
-  { text: 'Third test todo' }
+  { _id: new ObjectID(), text: 'First test todo' },
+  { _id: new ObjectID(), text: 'Second test todo' },
+  { _id: new ObjectID(), text: 'Third test todo' }
 ];
 
 beforeEach(done => {
@@ -73,6 +74,32 @@ describe('GET /todos', () => {
       .expect(res => {
         expect(res.body.todos.length).toBe(3);
       })
+      .end(done);
+  });
+});
+
+describe('GET /todos/:id', () => {
+  it('should get a to-do item', done => {
+    request(app)
+      .get(`/todos/${todosArr[0]._id.toHexString()}`)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.todo.text).toBe(todosArr[0].text);
+      })
+      .end(done);
+  });
+
+  it('should return 404 if todo not found', done => {
+    request(app)
+      .get(`/todos/${new ObjectID().toHexString()}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 if object ID is invalid', done => {
+    request(app)
+      .get('/todos/123')
+      .expect(404)
       .end(done);
   });
 });
