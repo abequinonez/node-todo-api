@@ -68,6 +68,25 @@ app.get('/todos/:id', (req, res) => {
     });
 });
 
+// Delete a to-do item
+app.delete('/todos/:id', (req, res) => {
+  const id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  Todo.findByIdAndRemove(id)
+    .then(todo => {
+      if (!todo) {
+        return res.status(404).send();
+      }
+
+      res.send({ todo });
+    })
+    .catch(err => res.status(400).send());
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
