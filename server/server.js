@@ -1,3 +1,5 @@
+require('./config/config');
+
 const express = require('express');
 const { ObjectID } = require('mongodb');
 const _ = require('lodash');
@@ -10,7 +12,7 @@ const { Todo } = require('./models/todo');
 const { User } = require('./models/user');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 /*
 Use built-in middleware (previously required importing body-parser) to parse
