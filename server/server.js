@@ -117,6 +117,21 @@ app.patch('/todos/:id', (req, res) => {
     .catch(err => res.status(400).send());
 });
 
+// Create a new user
+app.post('/users', (req, res) => {
+  // First pick off the properties we're interested in
+  const body = _.pick(req.body, ['email', 'password']);
+
+  // Next create an instance of the User model
+  const user = new User(body);
+
+  // Now try saving the instance (document) to the database
+  user
+    .save()
+    .then(user => res.send(user))
+    .catch(err => res.status(400).send(err));
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
