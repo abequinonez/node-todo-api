@@ -128,7 +128,10 @@ app.post('/users', (req, res) => {
   // Now try saving the instance (document) to the database
   user
     .save()
-    .then(user => res.send(user))
+    .then(() => user.generateAuthToken())
+    .then(token => {
+      res.header('x-auth', token).send(user);
+    })
     .catch(err => res.status(400).send(err));
 });
 
