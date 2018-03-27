@@ -7,9 +7,10 @@ const _ = require('lodash');
 // Import the configured database reference
 const { mongoose } = require('./db/mongoose');
 
-// Import the models
+// Import the models and middleware
 const { Todo } = require('./models/todo');
 const { User } = require('./models/user');
+const { authenticate } = require('./middleware/authenticate');
 
 const app = express();
 const port = process.env.PORT;
@@ -133,6 +134,11 @@ app.post('/users', (req, res) => {
       res.header('x-auth', token).send(user);
     })
     .catch(err => res.status(400).send(err));
+});
+
+// Get a user
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
 });
 
 app.listen(port, () => {
