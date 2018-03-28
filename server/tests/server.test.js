@@ -4,8 +4,15 @@ const { ObjectID } = require('mongodb');
 
 const { app } = require('./../server');
 const { Todo } = require('./../models/todo');
-const { todosArr, populateTodos } = require('./seed/seed');
+const { User } = require('./../models/user');
+const {
+  todosArr,
+  populateTodos,
+  usersArr,
+  populateUsers
+} = require('./seed/seed');
 
+beforeEach(populateUsers);
 beforeEach(populateTodos);
 
 describe('POST /todos', () => {
@@ -162,6 +169,30 @@ describe('PATCH /todos/:id', () => {
         expect(todo.text).toBe(text);
         expect(todo.completed).toBe(false);
         expect(todo.completedAt).toNotExist();
+      })
+      .end(done);
+  });
+});
+
+describe('GET /users/me', () => {
+  it('should return user if authenticated', done => {
+    request(app)
+      .get('/users/me')
+      .set('x-auth', usersArr[0].tokens[0].token)
+      .expect(200)
+      .expect(res => {
+        expect(res.body._id).toBe(usersArr[0]._id.toHexString());
+        expect(res.body.email).toBe(usersArr[0].email);
+      })
+      .end(done);
+  });
+
+  it('should return 401 if not authenticated', done => {
+    request(app)
+      .get('/users/me')
+      .expect(401)
+      .expect(res => {
+        expect(res.body).toEqual({});
       })
       .end(done);
   });
