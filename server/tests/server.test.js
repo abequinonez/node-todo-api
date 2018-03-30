@@ -221,7 +221,7 @@ describe('POST /users', () => {
           expect(user).toExist();
           expect(user.password).toNotBe(password);
           done();
-        });
+        }).catch(err => done(err));
       });
   });
 
